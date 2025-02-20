@@ -4,6 +4,8 @@ import {
 } from "react-router-dom";
 import MainLayout from "../layoutes/MainLayout";
 import Home from "../pages/Home";
+import SignUp from "../pages/SignUp";
+import Login from "../pages/Login";
 
 
 
@@ -19,6 +21,14 @@ const router = createBrowserRouter([
       }
     ]
   },
+  {
+    path: '/signup',
+    element: <SignUp></SignUp>
+  },
+  {
+    path: '/login',
+    element: <Login></Login>
+  }
 ]);
 
 
