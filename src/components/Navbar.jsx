@@ -14,6 +14,9 @@ const Navbar = () => {
     .catch((error) => console.error("Logout error:", error));
   };
 
+  // console.log(user.email);
+  
+
   return (
     <div className="navbar bg-base-100">
       <div className="navbar-start">
