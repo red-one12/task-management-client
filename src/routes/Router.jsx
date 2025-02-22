@@ -6,6 +6,7 @@ import Login from "../pages/Login";
 import HelpDesk from "../pages/HelpDesk";
 import MyTask from "../pages/MyTask";
 import AddTask from "../pages/AddTask";
+import ErrorPage from "../pages/ErrorPage";
 // import { DndProvider } from "react-dnd";
 // import { HTML5Backend } from "react-dnd-html5-backend";
 
@@ -14,6 +15,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout></MainLayout>,
+    errorElement: <ErrorPage></ErrorPage>,
     children: [
       {
         path: "/",

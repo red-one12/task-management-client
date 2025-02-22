@@ -3,6 +3,7 @@ import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 import { useDrag, useDrop } from "react-dnd";
 import { FaEdit, FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 
 const MyTask = () => {
   const { user } = useContext(AuthContext);
@@ -65,6 +66,11 @@ const MyTask = () => {
     axios
       .delete(`http://localhost:5000/tasks/${taskId}`)
       .then(() => {
+         Swal.fire({
+                    title: "Success",
+                    text: "Your Taks Has Been Deleted!",
+                    icon: "success",
+                  });
         setTasks(tasks.filter((task) => task._id !== taskId));
       })
       .catch((err) => {

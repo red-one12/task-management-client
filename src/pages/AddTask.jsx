@@ -2,9 +2,12 @@ import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 import { FaPlus } from "react-icons/fa";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 const AddTask = () => {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleAddTask = (e) => {
     e.preventDefault();
@@ -17,6 +20,12 @@ const AddTask = () => {
     axios
       .post("http://localhost:5000/tasks", taskInfo)
       .then((result) => {
+         Swal.fire({
+                    title: "Success",
+                    text: "Your Task Has Been Added!",
+                    icon: "success",
+                  });
+                  navigate('/myTask')
         console.log("success", result.data);
       })
       .catch((err) => {

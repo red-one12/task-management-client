@@ -1,10 +1,26 @@
-import { useContext } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import logo from '../assets/image/logo.png';
+import axios from "axios";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
+  const [currentUser, setCurrentUser] = useState([]);
+  const navigateToHome = useNavigate();
+
+  useEffect(() => {
+    if (user && user.email) {
+      // Make API request only if the user is authenticated
+      axios.get(`http://localhost:5000/users/${user.email}`)
+        .then(res => {
+          setCurrentUser(res.data);
+        })
+        .catch(err => {
+          console.log('Error fetching user data:', err);
+        });
+    }
+  }, [user]);  // Re-run effect if the `user` changes
 
   const handleLogout = () => {
     logoutUser()
@@ -79,44 +95,46 @@ const Navbar = () => {
 
       <div className="navbar-center hidden lg:flex">
         <ul className="menu menu-horizontal px-1 gap-10">
-        
-            <NavLink
-              to="/"
-              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
-            >
-              Home
-            </NavLink>
-        
-          
-            <NavLink
-              to="/addTask"
-              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
-            >
-              Add Task
-            </NavLink>
-          
-            <NavLink
-              to="/myTask"
-              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
-            >
-              My Task
-            </NavLink>
-         
-            <NavLink
-              to="/helpDesk"
-              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
-            >
-              Help Desk
-            </NavLink>
-      
+          <NavLink
+            to="/"
+            className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+          >
+            Home
+          </NavLink>
+
+          <NavLink
+            to="/addTask"
+            className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+          >
+            Add Task
+          </NavLink>
+
+          <NavLink
+            to="/myTask"
+            className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+          >
+            My Task
+          </NavLink>
+
+          <NavLink
+            to="/helpDesk"
+            className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+          >
+            Help Desk
+          </NavLink>
         </ul>
       </div>
 
       <div className="navbar-end">
         {user ? (
-          <button onClick={handleLogout} className="btn bg-[#f9bb17]">
-            Log Out
-          </button>
+          <div className="flex items-center gap-4">
+            <p className="hidden md:block font-bold uppercase">{currentUser.displayName ? currentUser.displayName : user.displayName}</p>
+            <img src={currentUser.photoURL || "https://via.placeholder.com/150"} className="h-10 w-10 rounded-full" alt="User Profile" />
+            
+            <button onClick={handleLogout} className="btn bg-[#f9bb17]">
+              Log Out
+            </button>
+          </div>
         ) : (
           <>
             <Link to="/login" className="btn bg-[#f9bb17]">

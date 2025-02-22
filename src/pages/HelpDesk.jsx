@@ -36,7 +36,7 @@ const HelpDesk = () => {
     const helpInfo = { email, problem };
 
     axios
-      .post("https://huntify-server.vercel.app/helps", helpInfo)
+      .post("http://localhost:5000/helps", helpInfo)
       .then((response) => {
         if (response.data?.acknowledged) {
           Swal.fire({
