@@ -4,6 +4,7 @@ import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import { Link, useNavigate } from "react-router-dom";
 import { IoCaretBack } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 const SignUp = () => {
   const { createUser } = useContext(AuthContext);
@@ -22,6 +23,11 @@ const SignUp = () => {
         const userInfo = { displayName, email, photoURL };
 
         navigateToHome("/");
+        Swal.fire({
+                            title: "Success",
+                            text: "Successfully Created Account!",
+                            icon: "success",
+                          });
 
         axios
           .post(

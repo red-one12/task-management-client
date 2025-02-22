@@ -4,6 +4,7 @@ import { AuthContext } from "../provider/AuthProvider";
 import { IoCaretBack } from "react-icons/io5";
 import { motion } from "framer-motion";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const Login = () => {
   const { loginUser, googleLogin, user } = useContext(AuthContext);
@@ -20,6 +21,11 @@ const Login = () => {
     loginUser(email, password)
       .then(() => {
         navigate("/");
+        Swal.fire({
+                    title: "Success",
+                    text: "Successfully Logged In!",
+                    icon: "success",
+                  });
       })
       .catch((err) => {
         setError("Invalid email or password");
@@ -35,6 +41,11 @@ const Login = () => {
           axios
             .get(`https://task-manager-server-pi-ebon.vercel.app/users/${loggedInUser.email}`)
             .then((res) => {
+              Swal.fire({
+                          title: "Success",
+                          text: "Successfully Logged In!",
+                          icon: "success",
+                        });
               if (!res.data) {
                 const userInfo = {
                   displayName: loggedInUser.displayName,

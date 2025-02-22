@@ -51,6 +51,11 @@ const MyTask = () => {
         updatedTask
       )
       .then((res) => {
+        Swal.fire({
+                            title: "Success",
+                            text: "Task Updated!!!",
+                            icon: "success",
+                          });
         setTasks(
           tasks.map((task) =>
             task._id === selectedTask._id ? { ...task, ...updatedTask } : task

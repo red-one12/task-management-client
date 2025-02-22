@@ -6,6 +6,7 @@ import axios from "axios";
 import { ThemeContext } from "../provider/ThemeProvider";
 import { CiDark, CiLight } from "react-icons/ci";
 import { FiMenu, FiX } from "react-icons/fi"; // New React icons for toggle
+import Swal from "sweetalert2";
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
@@ -34,6 +35,11 @@ const Navbar = () => {
     logoutUser()
       .then(() => {
         navigateToHome("/");
+        Swal.fire({
+                    title: "Success",
+                    text: "Successfully Logged Out!",
+                    icon: "success",
+                  });
       })
       .catch((error) => console.error("Logout error:", error));
   };
