@@ -11,21 +11,29 @@ const AddTask = () => {
 
   const handleAddTask = (e) => {
     e.preventDefault();
+    if (!user) {
+      return navigate("/login");
+    }
     const form = e.target;
     const title = form.title.value;
     const description = form.description.value;
 
-    const taskInfo = { title, description, email: user.email || "Unknown", status: "to-do" };
+    const taskInfo = {
+      title,
+      description,
+      email: user.email || "Unknown",
+      status: "to-do",
+    };
 
     axios
-      .post("http://localhost:5000/tasks", taskInfo)
+      .post("https://task-manager-server-pi-ebon.vercel.app/tasks", taskInfo)
       .then((result) => {
-         Swal.fire({
-                    title: "Success",
-                    text: "Your Task Has Been Added!",
-                    icon: "success",
-                  });
-                  navigate('/myTask')
+        Swal.fire({
+          title: "Success",
+          text: "Your Task Has Been Added!",
+          icon: "success",
+        });
+        navigate("/myTask");
         console.log("success", result.data);
       })
       .catch((err) => {
@@ -35,19 +43,23 @@ const AddTask = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen">
-      <div className="card w-full max-w-lg bg-white/80 shadow-xl backdrop-blur-md p-8 rounded-lg">
-        <h2 className="text-3xl font-bold text-center text-gray-700">Add New Task</h2>
+      <div className="bg-card-color card w-full max-w-lg bg-white/80 shadow-xl backdrop-blur-md p-8 rounded-lg">
+        <h2 className="txt-color text-3xl font-bold text-center text-gray-700">
+          Add New Task
+        </h2>
         <form onSubmit={handleAddTask} className="mt-6">
           {/* Title Field */}
           <div className="form-control mb-4">
             <label className="label">
-              <span className="label-text text-gray-700 font-semibold">Title</span>
+              <span className="txt-color label-text text-gray-700 font-semibold">
+                Title
+              </span>
             </label>
             <input
               type="text"
               name="title"
               placeholder="Enter task title"
-              className="input input-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
+              className="bg-card-color txt-color input input-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
               required
             />
           </div>
@@ -55,12 +67,14 @@ const AddTask = () => {
           {/* Description Field */}
           <div className="form-control mb-4">
             <label className="label">
-              <span className="label-text text-gray-700 font-semibold">Description</span>
+              <span className="txt-color label-text text-gray-700 font-semibold">
+                Description
+              </span>
             </label>
             <textarea
               name="description"
               placeholder="Enter task details"
-              className="textarea textarea-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
+              className="bg-card-color txt-color textarea textarea-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
               required
             />
           </div>

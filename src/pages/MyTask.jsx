@@ -19,7 +19,7 @@ const MyTask = () => {
 
   useEffect(() => {
     axios
-      .get(`http://localhost:5000/tasks/${user.email}`)
+      .get(`https://task-manager-server-pi-ebon.vercel.app/tasks/${user.email}`)
       .then((res) => {
         setTasks(res.data);
       })
@@ -46,7 +46,10 @@ const MyTask = () => {
     };
 
     axios
-      .put(`http://localhost:5000/tasks/${selectedTask._id}`, updatedTask)
+      .put(
+        `https://task-manager-server-pi-ebon.vercel.app/tasks/${selectedTask._id}`,
+        updatedTask
+      )
       .then((res) => {
         setTasks(
           tasks.map((task) =>
@@ -64,13 +67,13 @@ const MyTask = () => {
   // Handle task delete
   const handleDelete = (taskId) => {
     axios
-      .delete(`http://localhost:5000/tasks/${taskId}`)
+      .delete(`https://task-manager-server-pi-ebon.vercel.app/tasks/${taskId}`)
       .then(() => {
-         Swal.fire({
-                    title: "Success",
-                    text: "Your Taks Has Been Deleted!",
-                    icon: "success",
-                  });
+        Swal.fire({
+          title: "Success",
+          text: "Your Taks Has Been Deleted!",
+          icon: "success",
+        });
         setTasks(tasks.filter((task) => task._id !== taskId));
       })
       .catch((err) => {
@@ -120,15 +123,18 @@ const MyTask = () => {
             task._id === item.id ? { ...task, status } : task
           );
           setTasks(updatedTasks);
-          axios.put(`http://localhost:5000/tasks/${item.id}`, { status });
+          axios.put(
+            `https://task-manager-server-pi-ebon.vercel.app/tasks/${item.id}`,
+            { status }
+          );
         }
       },
     }));
 
     const containerStyles = {
-      "to-do": "bg-red-100 border-red-400",
-      "in-progress": "bg-yellow-100 border-yellow-400",
-      "done": "bg-green-100 border-green-400",
+      "to-do": "bg-card-color bg-red-100 border-red-400",
+      "in-progress": "bg-card-color bg-yellow-100 border-yellow-400",
+      done: "bg-card-color bg-green-100 border-green-400",
     };
 
     return (
@@ -136,7 +142,9 @@ const MyTask = () => {
         ref={drop}
         className={`p-6 rounded-lg shadow-md border ${containerStyles[status]}`}
       >
-        <h2 className="text-xl font-semibold mb-3 text-gray-700 capitalize">{status}</h2>
+        <h2 className="text-xl font-semibold mb-3 text-gray-700 capitalize">
+          {status}
+        </h2>
         <div className="space-y-3">{children}</div>
       </div>
     );
@@ -145,28 +153,36 @@ const MyTask = () => {
   return (
     <div className="pt-40 grid grid-cols-1 md:grid-cols-3 gap-6 p-5">
       <DropContainer status="to-do">
-        {tasks.filter((task) => task.status === "to-do").map((task) => (
-          <DraggableTask key={task._id} task={task} />
-        ))}
+        {tasks
+          .filter((task) => task.status === "to-do")
+          .map((task) => (
+            <DraggableTask key={task._id} task={task} />
+          ))}
       </DropContainer>
 
       <DropContainer status="in-progress">
-        {tasks.filter((task) => task.status === "in-progress").map((task) => (
-          <DraggableTask key={task._id} task={task} />
-        ))}
+        {tasks
+          .filter((task) => task.status === "in-progress")
+          .map((task) => (
+            <DraggableTask key={task._id} task={task} />
+          ))}
       </DropContainer>
 
       <DropContainer status="done">
-        {tasks.filter((task) => task.status === "done").map((task) => (
-          <DraggableTask key={task._id} task={task} />
-        ))}
+        {tasks
+          .filter((task) => task.status === "done")
+          .map((task) => (
+            <DraggableTask key={task._id} task={task} />
+          ))}
       </DropContainer>
 
       {/* Modal for Editing Task */}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-semibold mb-4 text-gray-700">Edit Task</h2>
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">
+              Edit Task
+            </h2>
             <label className="block mb-2 text-gray-700">Title</label>
             <input
               type="text"

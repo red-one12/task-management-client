@@ -1,12 +1,14 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
 import { IoCaretBack } from "react-icons/io5";
+import { motion } from "framer-motion";
+import axios from "axios";
 
 const Login = () => {
-  const { loginUser, googleLogin } = useContext(AuthContext);
+  const { loginUser, googleLogin, user } = useContext(AuthContext);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // To redirect after login
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -17,23 +19,62 @@ const Login = () => {
 
     loginUser(email, password)
       .then(() => {
-        navigate("/"); 
+        navigate("/");
       })
       .catch((err) => {
-        setError("Invalid email or password"); 
+        setError("Invalid email or password");
         console.error(err);
       });
   };
 
   const handleGoogleLogin = () => {
     googleLogin()
-      .then(() => {
-        navigate("/"); 
+      .then((result) => {
+        const loggedInUser = result.user;
+        if (loggedInUser) {
+          axios
+            .get(`https://task-manager-server-pi-ebon.vercel.app/users/${loggedInUser.email}`)
+            .then((res) => {
+              if (!res.data) {
+                const userInfo = {
+                  displayName: loggedInUser.displayName,
+                  email: loggedInUser.email,
+                  photoURL: loggedInUser.photoURL,
+                };
+                return axios.post("https://task-manager-server-pi-ebon.vercel.app/users", userInfo);
+              }
+            })
+            .then(() => {
+              navigate("/");
+            })
+            .catch((err) => {
+              console.error("Google Login Error:", err);
+            });
+        }
       })
       .catch((err) => {
-        console.error(err);
+        console.error("Error logging in with Google:", err);
       });
   };
+
+  useEffect(() => {
+    if (user) {
+      const userInfo = {
+        displayName: user.displayName,
+        email: user.email,
+        photoURL: user.photoURL,
+      };
+
+      axios
+        .post("https://task-manager-server-pi-ebon.vercel.app/users", userInfo)
+        .then((response) => {
+          console.log("User registered successfully:", response.data);
+        })
+        .catch((error) => {
+          console.error("Error registering user:", error);
+        });
+    }
+  }, [user]);
 
   return (
     <div className="min-h-screen flex justify-center items-center relative">
@@ -46,72 +87,83 @@ const Login = () => {
         Home
       </button>
 
-      <div className="w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
-        <h2 className="text-3xl font-semibold text-center text-gray-800 mb-8">Log In</h2>
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* Email input */}
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter your email"
-              required
-            />
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="card shadow-2xl rounded-lg p-8 max-w-sm w-full"
+      >
+        <div className="bg-card-color w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
+          <h2 className="txt-color text-3xl font-semibold text-center text-gray-800 mb-8">Log In</h2>
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Email input */}
+            <div>
+              <label htmlFor="email" className="txt-color block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                className="txt-color w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            {/* Password input */}
+            <div>
+              <label htmlFor="password" className="txt-color block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                className="txt-color w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                placeholder="Enter your password"
+                required
+              />
+            </div>
+
+            {/* Display error message */}
+            {error && <p className="text-red-500 text-sm">{error}</p>}
+
+            {/* Submit button */}
+            <button
+              type="submit"
+              className="w-full py-3 bg-yellow-400 text-white font-semibold rounded-lg hover:bg-yellow-500 transition duration-300"
+            >
+              Log In
+            </button>
+          </form>
+
+          {/* Google Sign-In Button */}
+          <div className="mt-6">
+            <button
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition duration-300"
+            >
+              <img
+                src="https://www.svgrepo.com/show/475656/google-color.svg"
+                alt="Google Sign-In Icon"
+                className="w-6 h-6"
+              />
+              <span className="text-sm text-gray-700">Continue with Google</span>
+            </button>
           </div>
-          
-          {/* Password input */}
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
-              Password
-            </label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-yellow-400"
-              placeholder="Enter your password"
-              required
-            />
+
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-600">
+              Don't have an account?{" "}
+              <Link to="/signup" className="text-yellow-500 font-semibold hover:underline">
+                Sign Up
+              </Link>
+            </p>
           </div>
-
-          {/* Display error message */}
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-
-          {/* Submit button */}
-          <button
-            type="submit"
-            className="w-full py-3 bg-yellow-400 text-white font-semibold rounded-lg hover:bg-yellow-500 transition duration-300"
-          >
-            Log In
-          </button>
-        </form>
-
-        {/* Google Sign-In Button */}
-        <div className="mt-6">
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-2 py-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition duration-300"
-          >
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google Icon" className="w-6 h-6" />
-            <span className="text-sm text-gray-700">Continue with Google</span>
-          </button>
         </div>
-
-        <div className="mt-6 text-center">
-          <p className="text-sm text-gray-600">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-yellow-500 font-semibold hover:underline">
-              Sign Up
-            </Link>
-          </p>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

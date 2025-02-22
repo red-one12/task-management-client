@@ -10,7 +10,10 @@ const HelpDesk = () => {
   const { user } = useContext(AuthContext);
 
   // State for form
-  const [formData, setFormData] = useState({ email: user?.email || "", problem: "" });
+  const [formData, setFormData] = useState({
+    email: user?.email || "",
+    problem: "",
+  });
 
   // Handle input change
   const handleChange = (e) => {
@@ -36,7 +39,7 @@ const HelpDesk = () => {
     const helpInfo = { email, problem };
 
     axios
-      .post("http://localhost:5000/helps", helpInfo)
+      .post("https://task-manager-server-pi-ebon.vercel.app/helps", helpInfo)
       .then((response) => {
         if (response.data?.acknowledged) {
           Swal.fire({
@@ -63,14 +66,13 @@ const HelpDesk = () => {
   };
 
   return (
-    <div className="py-28 px-4 bg-gray-50">
-      <h2 className="text-center text-4xl font-bold text-gray-800">
+    <div className="body py-28 px-4 bg-gray-50">
+      <h2 className="txt-color text-center text-4xl font-bold text-gray-800">
         Help <span className="text-yellow-500">Desk</span>
       </h2>
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row justify-center items-center gap-10 lg:gap-16 mt-10">
-        
         {/* Animation Section */}
         <div className="w-full max-w-sm lg:max-w-md">
           <Lottie animationData={helpLottie} loop={true} />
@@ -79,7 +81,7 @@ const HelpDesk = () => {
         {/* Form Section */}
         <div className="w-full max-w-md">
           <motion.div
-            className="w-full rounded-lg bg-white p-8 shadow-xl"
+            className="bg-card-color w-full rounded-lg bg-white p-8 shadow-xl"
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
@@ -88,14 +90,16 @@ const HelpDesk = () => {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Input */}
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">Email</label>
+                <label className="txt-color block text-lg font-medium text-gray-700 mb-2">
+                  Email
+                </label>
                 <motion.input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="Enter your email"
-                  className="w-full rounded-lg border border-gray-300 p-3 text-gray-800 focus:ring-2 focus:ring-yellow-500 focus:outline-none transition duration-300"
+                  className="txt-color w-full rounded-lg border border-gray-300 p-3 text-gray-800 focus:ring-2 focus:ring-yellow-500 focus:outline-none transition duration-300"
                   whileFocus={{ scale: 1.02 }}
                   required
                 />
@@ -103,14 +107,16 @@ const HelpDesk = () => {
 
               {/* Problem Textarea */}
               <div>
-                <label className="block text-lg font-medium text-gray-700 mb-2">Your Problem</label>
+                <label className="txt-color block text-lg font-medium text-gray-700 mb-2">
+                  Your Problem
+                </label>
                 <motion.textarea
                   name="problem"
                   value={formData.problem}
                   onChange={handleChange}
                   placeholder="Describe your issue"
                   rows="4"
-                  className="w-full rounded-lg border border-gray-300 p-3 text-gray-800 focus:ring-2 focus:ring-yellow-500 focus:outline-none transition duration-300"
+                  className="txt-color w-full rounded-lg border border-gray-300 p-3 text-gray-800 focus:ring-2 focus:ring-yellow-500 focus:outline-none transition duration-300"
                   whileFocus={{ scale: 1.02 }}
                   required
                 ></motion.textarea>

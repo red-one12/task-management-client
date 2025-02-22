@@ -3,3 +3,32 @@
 
 
 
+
+/* Default Light Theme Styles */
+body {
+  background-color: white;
+  color: black;
+}
+
+
+html.dark body{
+  background-color: #000622; 
+  
+}
+html.dark .body{
+  background-color: #000622; 
+  
+}
+
+html.dark .bg-color{
+  background-color: #000b3b; 
+}
+html.dark .bg-card-color{
+  background-color: #00000000; 
+  border: 1px solid #f9bb17;
+}
+html.dark .txt-color{
+  color: #ffffff; 
+}
+
+

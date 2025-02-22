@@ -48,16 +48,16 @@ const HowToUseApp = () => {
 
   return (
     <div className="flex flex-col items-center gap-6 py-10 px-5">
-      <h2 className="text-3xl font-bold text-center">How to Use Our App</h2>
+      <h2 className="txt-color text-3xl font-bold text-center">How to Use Our App</h2>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {steps.map((step) => (
           <div
             key={step.id}
-            className="card bg-base-100 shadow-xl p-6 text-center transition-transform duration-300 hover:scale-105"
+            className="bg-card-color card bg-base-100 shadow-xl p-6 text-center transition-transform duration-300 hover:scale-105"
           >
             <div className="flex justify-center">{step.icon}</div>
             <div className="card-body">
-              <h3 className="card-title">{step.title}</h3>
+              <h3 className="txt-color card-title">{step.title}</h3>
               <p className="text-gray-600 text-start">{step.description}</p>
               <div className="flex justify-center mt-3">
                 <Link
