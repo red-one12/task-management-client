@@ -2,11 +2,15 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
 import { useDrag, useDrop } from "react-dnd";
-import { FaEdit, FaTrash } from "react-icons/fa"; // Importing edit and trash icons
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const MyTask = () => {
   const { user } = useContext(AuthContext);
   const [tasks, setTasks] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedTask, setSelectedTask] = useState(null);
+  const [updatedTitle, setUpdatedTitle] = useState("");
+  const [updatedDescription, setUpdatedDescription] = useState("");
 
   if (!user) {
     return <div className="loading"></div>;
@@ -22,33 +26,45 @@ const MyTask = () => {
       });
   }, [user.email]);
 
-  // Handle task update after drag-and-drop
-  const updateTaskStatus = (taskId, status) => {
-    axios.put(`http://localhost:5000/tasks/${taskId}`, { status })
+  // Open Modal for Editing
+  const handleEdit = (task) => {
+    setSelectedTask(task);
+    setUpdatedTitle(task.title);
+    setUpdatedDescription(task.description);
+    setIsModalOpen(true);
+  };
+
+  // Handle Update Submission
+  const handleUpdate = () => {
+    if (!selectedTask) return;
+
+    const updatedTask = {
+      title: updatedTitle,
+      description: updatedDescription,
+    };
+
+    axios.put(`http://localhost:5000/tasks/${selectedTask._id}`, updatedTask)
       .then(res => {
-        // Task updated successfully on the server
+        setTasks(tasks.map(task =>
+          task._id === selectedTask._id ? { ...task, ...updatedTask } : task
+        ));
+        setIsModalOpen(false);
+        setSelectedTask(null);
       })
       .catch(err => {
-        console.log('Error updating task status:', err);
+        console.log('Error updating task:', err);
       });
   };
 
   // Handle task delete
   const handleDelete = (taskId) => {
     axios.delete(`http://localhost:5000/tasks/${taskId}`)
-      .then(res => {
-        // Remove deleted task from state
+      .then(() => {
         setTasks(tasks.filter(task => task._id !== taskId));
       })
       .catch(err => {
         console.log('Error deleting task:', err);
       });
-  };
-
-  // Handle task edit (for now, just logging task id)
-  const handleEdit = (task) => {
-    console.log("Edit task:", task);
-    // Implement your edit functionality here, such as opening a modal with the task details.
   };
 
   // Drag Source: Task
@@ -62,7 +78,6 @@ const MyTask = () => {
       <div ref={drag} className="bg-white p-3 rounded shadow mb-2">
         <h3 className="font-medium">{task.title}</h3>
         <p className="text-sm text-gray-600">{task.description}</p>
-        {/* Edit and Delete Icons */}
         <div className="flex justify-end gap-2 mt-2">
           <FaEdit className="text-blue-500 cursor-pointer" onClick={() => handleEdit(task)} />
           <FaTrash className="text-red-500 cursor-pointer" onClick={() => handleDelete(task._id)} />
@@ -77,19 +92,15 @@ const MyTask = () => {
       accept: "task",
       drop: (item) => {
         if (item.status !== status) {
-          // Optimistic UI update: Move task immediately in the state
-          const updatedTasks = tasks.map((task) => 
+          const updatedTasks = tasks.map((task) =>
             task._id === item.id ? { ...task, status } : task
           );
           setTasks(updatedTasks);
-
-          // Now update the server
-          updateTaskStatus(item.id, status);
+          axios.put(`http://localhost:5000/tasks/${item.id}`, { status });
         }
       },
     }));
 
-    
     const containerStyle = {
       "to-do": "bg-gray-100",
       "in-progress": "bg-blue-100",
@@ -106,26 +117,49 @@ const MyTask = () => {
 
   return (
     <div className="grid grid-cols-3 gap-4 p-5">
-      {/* To-Do Section */}
       <DropContainer status="to-do">
         {tasks.filter(task => task.status === "to-do").map(task => (
           <DraggableTask key={task._id} task={task} />
         ))}
       </DropContainer>
 
-      {/* In-Progress Section */}
       <DropContainer status="in-progress">
         {tasks.filter(task => task.status === "in-progress").map(task => (
           <DraggableTask key={task._id} task={task} />
         ))}
       </DropContainer>
 
-      {/* Done Section */}
       <DropContainer status="done">
         {tasks.filter(task => task.status === "done").map(task => (
           <DraggableTask key={task._id} task={task} />
         ))}
       </DropContainer>
+
+      {/* Modal for Editing Task */}
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+          <div className="bg-white p-5 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-semibold mb-4">Edit Task</h2>
+            <label className="block mb-2">Title</label>
+            <input
+              type="text"
+              className="w-full p-2 border rounded mb-4"
+              value={updatedTitle}
+              onChange={(e) => setUpdatedTitle(e.target.value)}
+            />
+            <label className="block mb-2">Description</label>
+            <textarea
+              className="w-full p-2 border rounded mb-4"
+              value={updatedDescription}
+              onChange={(e) => setUpdatedDescription(e.target.value)}
+            />
+            <div className="flex justify-end gap-3">
+              <button className="px-4 py-2 bg-gray-400 text-white rounded" onClick={() => setIsModalOpen(false)}>Cancel</button>
+              <button className="px-4 py-2 bg-blue-500 text-white rounded" onClick={handleUpdate}>Update</button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
