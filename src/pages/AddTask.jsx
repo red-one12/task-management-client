@@ -1,47 +1,70 @@
 import { useContext } from "react";
 import { AuthContext } from "../provider/AuthProvider";
 import axios from "axios";
+import { FaPlus } from "react-icons/fa";
 
 const AddTask = () => {
-  const {user} = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+
   const handleAddTask = (e) => {
     e.preventDefault();
     const form = e.target;
     const title = form.title.value;
     const description = form.description.value;
 
-    const taskInfo = {title, description, email: user.email || 'Unknown', status: 'to-do'};
-    // console.log(taskInfo);
-    axios.post('http://localhost:5000/tasks', taskInfo)
-    .then(result => {
-      console.log('success', result.data);
-    })
-    .catch(err => {
-      console.log('error', err);
-    })
-    
-  }
+    const taskInfo = { title, description, email: user.email || "Unknown", status: "to-do" };
+
+    axios
+      .post("http://localhost:5000/tasks", taskInfo)
+      .then((result) => {
+        console.log("success", result.data);
+      })
+      .catch((err) => {
+        console.log("error", err);
+      });
+  };
+
   return (
-    <div>
-      <div className="card bg-base-100 w-full max-w-sm shrink-0 shadow-2xl">
-      <form onSubmit={handleAddTask} className="card-body">
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Title</span>
-          </label>
-          <input type="text" name="title" placeholder="Title" className="input input-bordered" required />
-        </div>
-        <div className="form-control">
-          <label className="label">
-            <span className="label-text">Description</span>
-          </label>
-          <input type="text" name="description" placeholder="Description" className="input input-bordered" required />
-        </div>
-        <div className="form-control mt-6">
-          <button className="btn btn-primary">Add</button>
-        </div>
-      </form>
-    </div>
+    <div className="flex justify-center items-center min-h-screen">
+      <div className="card w-full max-w-lg bg-white/80 shadow-xl backdrop-blur-md p-8 rounded-lg">
+        <h2 className="text-3xl font-bold text-center text-gray-700">Add New Task</h2>
+        <form onSubmit={handleAddTask} className="mt-6">
+          {/* Title Field */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text text-gray-700 font-semibold">Title</span>
+            </label>
+            <input
+              type="text"
+              name="title"
+              placeholder="Enter task title"
+              className="input input-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
+              required
+            />
+          </div>
+
+          {/* Description Field */}
+          <div className="form-control mb-4">
+            <label className="label">
+              <span className="label-text text-gray-700 font-semibold">Description</span>
+            </label>
+            <textarea
+              name="description"
+              placeholder="Enter task details"
+              className="textarea textarea-bordered w-full bg-white/90 focus:ring-2 focus:ring-yellow-500"
+              required
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="form-control mt-6">
+            <button className="btn bg-yellow-500 text-white text-lg font-semibold flex items-center justify-center gap-2 hover:bg-yellow-600 transition-all duration-300">
+              <FaPlus />
+              Add Task
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

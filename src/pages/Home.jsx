@@ -1,9 +1,14 @@
+import Banner from "../components/Banner";
+import HowToUseApp from "../components/HowToUseApp";
 
 
 const Home = () => {
   return (
     <div>
-      hello form home
+      <Banner></Banner>
+      <div>
+        <HowToUseApp></HowToUseApp>
+      </div>
     </div>
   );
 };

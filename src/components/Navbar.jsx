@@ -1,24 +1,21 @@
 import { useContext } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { AuthContext } from "../provider/AuthProvider";
-import logo from '../assets/image/logo.png'
+import logo from '../assets/image/logo.png';
 
 const Navbar = () => {
   const { user, logoutUser } = useContext(AuthContext);
 
   const handleLogout = () => {
     logoutUser()
-    .then(() => {
-      navigateToHome("/");
-    })
-    .catch((error) => console.error("Logout error:", error));
+      .then(() => {
+        navigateToHome("/");
+      })
+      .catch((error) => console.error("Logout error:", error));
   };
 
-  // console.log(user.email);
-  
-
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-yellow-50 fixed top-0 z-50 w-full shadow-md">
       <div className="navbar-start">
         <div className="dropdown">
           <div tabIndex={0} role="button" className="btn btn-ghost lg:hidden">
@@ -42,39 +39,79 @@ const Navbar = () => {
             className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
           >
             <li>
-              <NavLink to='/'>Home</NavLink>
+              <NavLink
+                to="/"
+                className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+              >
+                Home
+              </NavLink>
             </li>
             <li>
-              <NavLink to='/addTask'>Add Task</NavLink>
+              <NavLink
+                to="/addTask"
+                className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+              >
+                Add Task
+              </NavLink>
             </li>
             <li>
-            <NavLink to='/myTask'>My Task</NavLink>
+              <NavLink
+                to="/myTask"
+                className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+              >
+                My Task
+              </NavLink>
             </li>
             <li>
-            <NavLink to='/helpDesk'>Help Desk</NavLink>
+              <NavLink
+                to="/helpDesk"
+                className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+              >
+                Help Desk
+              </NavLink>
             </li>
           </ul>
         </div>
-        <Link to='/'>
-          <img className="w-[50px]" src={logo} alt="" />
+        <Link to="/">
+          <img className="w-[50px]" src={logo} alt="Logo" />
         </Link>
       </div>
+
       <div className="navbar-center hidden lg:flex">
-        <ul className="menu menu-horizontal px-1">
-        <li>
-              <NavLink to='/'>Home</NavLink>
-            </li>
-        <li>
-              <NavLink to='/addTask'>Add Task</NavLink>
-            </li>
-            <li>
-            <NavLink to='/myTask'>My Task</NavLink>
-            </li>
-            <li>
-            <NavLink to='/helpDesk'>Help Desk</NavLink>
-            </li>
+        <ul className="menu menu-horizontal px-1 gap-10">
+        
+            <NavLink
+              to="/"
+              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+            >
+              Home
+            </NavLink>
+        
+          
+            <NavLink
+              to="/addTask"
+              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+            >
+              Add Task
+            </NavLink>
+          
+            <NavLink
+              to="/myTask"
+              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+            >
+              My Task
+            </NavLink>
+         
+            <NavLink
+              to="/helpDesk"
+              className={({ isActive }) => isActive ? "text-[#f9bb17] font-bold" : ""}
+            >
+              Help Desk
+            </NavLink>
+      
         </ul>
       </div>
+
       <div className="navbar-end">
         {user ? (
           <button onClick={handleLogout} className="btn bg-[#f9bb17]">
