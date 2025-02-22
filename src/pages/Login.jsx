@@ -104,7 +104,7 @@ const Login = () => {
         transition={{ duration: 0.8 }}
         className="card shadow-2xl rounded-lg p-8 max-w-sm w-full"
       >
-        <div className="bg-card-color w-full max-w-md p-8 bg-white shadow-xl rounded-lg">
+        <div className="bg-card-color w-full max-w-md p-8 bg-white rounded-lg">
           <h2 className="txt-color text-3xl font-semibold text-center text-gray-800 mb-8">Log In</h2>
 
           <form onSubmit={handleSubmit} className="space-y-6">

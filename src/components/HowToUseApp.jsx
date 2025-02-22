@@ -1,3 +1,4 @@
+import { useContext } from "react";
 import {
   FaUserPlus,
   FaSignInAlt,
@@ -6,8 +7,11 @@ import {
   FaHeadset,
 } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../provider/AuthProvider";
 
 const HowToUseApp = () => {
+  const { user } = useContext(AuthContext);
+
   const steps = [
     {
       id: 1,
@@ -35,7 +39,7 @@ const HowToUseApp = () => {
       title: "Complete Tasks",
       description: "Mark tasks as completed when done.",
       icon: <FaCheckCircle className="text-4xl text-purple-500" />,
-      link: "/myTask",
+      link: user ? "/myTask" : "/login", 
     },
     {
       id: 5,
